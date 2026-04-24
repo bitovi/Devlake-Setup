@@ -1,0 +1,68 @@
+services:
+  mysql:
+    image: mysql:8
+    volumes:
+      - mysql-storage:/var/lib/mysql
+    restart: always
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: lake
+      MYSQL_USER: merico
+      MYSQL_PASSWORD: merico
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_bin
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  grafana:
+    image: apache/devlake-dashboard:v1.0.4-alpha
+    ports:
+      - "3002:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      GF_SERVER_ROOT_URL: "http://localhost:4000/grafana"
+      GF_USERS_DEFAULT_THEME: "light"
+      MYSQL_URL: mysql:3306
+      MYSQL_DATABASE: lake
+      MYSQL_USER: merico
+      MYSQL_PASSWORD: merico
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  devlake:
+    image: apache/devlake:v1.0.4-alpha
+    ports:
+      - "127.0.0.1:8090:8080"
+    restart: always
+    volumes:
+      - ./.env:/app/.env
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  config-ui:
+    image: apache/devlake-config-ui:v1.0.4-alpha
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    environment:
+      DEVLAKE_ENDPOINT: devlake:8080
+      GRAFANA_ENDPOINT: grafana:3000
+    depends_on:
+      - devlake
+
+volumes:
+  mysql-storage:
+  grafana-storage:
