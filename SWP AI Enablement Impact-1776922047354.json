@@ -1,0 +1,2198 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 43,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN finished_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  COUNT(*) as total_deployments,\n  COUNT(DISTINCT DATE(finished_date)) as deployment_days,\n  ROUND(COUNT(*) / COUNT(DISTINCT DATE(finished_date)), 1) as deploys_per_day\nFROM lake.cicd_deployment_commits\nWHERE result = 'SUCCESS'\n  AND environment LIKE '%PRODUCTION%'\n  AND finished_date >= '2025-10-01'\nGROUP BY CASE \n  WHEN finished_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "DORA: Deployment Frequency",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 15,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN finished_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  COUNT(*) as total_deployments,\n  COUNT(CASE WHEN result = 'FAILURE' THEN 1 END) as failed_deployments,\n  COUNT(CASE WHEN result = 'SUCCESS' THEN 1 END) as successful_deployments,\n  ROUND(COUNT(CASE WHEN result = 'FAILURE' THEN 1 END) * 100.0 / COUNT(*), 2) as failure_rate_pct\nFROM lake.cicd_deployment_commits\nWHERE environment LIKE '%PRODUCTION%'\n  AND finished_date >= '2025-10-01'\nGROUP BY CASE \n  WHEN finished_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "DORA: Change Failure Rate",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 14,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN created_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  COUNT(*) as total_prs,\n  ROUND(AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date)), 1) as avg_lead_time_hours,\n  ROUND(MIN(TIMESTAMPDIFF(HOUR, created_date, merged_date)), 1) as min_lead_time_hours,\n  ROUND(MAX(TIMESTAMPDIFF(HOUR, created_date, merged_date)), 1) as max_lead_time_hours\nFROM lake.pull_requests\nWHERE merged_date IS NOT NULL\n  AND created_date >= '2025-10-01'\n  AND base_repo_id = 'github:GithubRepo:1:828624780'\nGROUP BY CASE \n  WHEN created_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "DORA: Lead Time for Changes",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 16,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN failed.finished_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  COUNT(*) as total_failures,\n  ROUND(AVG(TIMESTAMPDIFF(HOUR, failed.finished_date, recovery.finished_date)), 1) as avg_recovery_hours,\n  ROUND(MIN(TIMESTAMPDIFF(HOUR, failed.finished_date, recovery.finished_date)), 1) as min_recovery_hours,\n  ROUND(MAX(TIMESTAMPDIFF(HOUR, failed.finished_date, recovery.finished_date)), 1) as max_recovery_hours\nFROM lake.cicd_deployment_commits failed\nJOIN lake.cicd_deployment_commits recovery ON \n  failed.cicd_scope_id = recovery.cicd_scope_id\n  AND recovery.finished_date > failed.finished_date\n  AND recovery.result = 'SUCCESS'\n  AND recovery.finished_date = (\n    SELECT MIN(finished_date)\n    FROM lake.cicd_deployment_commits\n    WHERE cicd_scope_id = failed.cicd_scope_id\n      AND finished_date > failed.finished_date\n      AND result = 'SUCCESS'\n  )\nWHERE failed.result = 'FAILURE'\n  AND failed.environment LIKE '%PRODUCTION%'\n  AND failed.finished_date >= '2025-10-01'\nGROUP BY CASE \n  WHEN failed.finished_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "DORA: Failed Deployment Recovery Time (MTTR)",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  STR_TO_DATE(DATE_FORMAT(started_date, '%Y-%m-01'), '%Y-%m-%d') as time,\n  AVG(TIMESTAMPDIFF(MINUTE, started_date, finished_date)) as avg_duration_minutes,\n  COUNT(*) as job_count\nFROM lake.cicd_tasks\nWHERE finished_date IS NOT NULL\n  AND started_date >= '2025-10-01'\nGROUP BY time\nORDER BY time;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "CI/CD Job Duration Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 17,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  period,\n  SUM(CASE WHEN status = 'TODO' THEN hours_in_status ELSE 0 END) as total_wait_hours,\n  SUM(CASE WHEN status = 'IN_PROGRESS' THEN hours_in_status ELSE 0 END) as total_process_hours,\n  COUNT(DISTINCT issue_id) as total_issues,\n  ROUND(SUM(CASE WHEN status = 'TODO' THEN hours_in_status ELSE 0 END) / COUNT(DISTINCT issue_id), 1) as avg_wait_per_issue,\n  ROUND(SUM(CASE WHEN status = 'IN_PROGRESS' THEN hours_in_status ELSE 0 END) / COUNT(DISTINCT issue_id), 1) as avg_process_per_issue\nFROM (\n  SELECT \n    ic.issue_id,\n    ic.to_value as status,\n    CASE \n      WHEN ic.created_date < '2026-01-01' THEN 'Before AI'\n      ELSE 'After AI'\n    END as period,\n    TIMESTAMPDIFF(HOUR, ic.created_date,\n      COALESCE(\n        (SELECT MIN(ic2.created_date)\n         FROM lake.issue_changelogs ic2\n         WHERE ic2.issue_id = ic.issue_id\n           AND ic2.created_date > ic.created_date\n           AND ic2.field_name = 'status'),\n        NOW()\n      )) as hours_in_status\n  FROM lake.issue_changelogs ic\n  WHERE ic.created_date >= '2025-10-01'\n    AND ic.field_name = 'status'\n    AND ic.to_value IN ('TODO', 'IN_PROGRESS')\n) status_durations\nGROUP BY period;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Wait Time vs Process Time",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 19,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN pr.created_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  COUNT(DISTINCT pr.id) as total_prs,\n  ROUND(AVG(TIMESTAMPDIFF(HOUR, \n    (SELECT MIN(prc2.commit_authored_date)\n     FROM lake.pull_request_commits prc2\n     WHERE prc2.pull_request_id = pr.id),\n    pr.created_date)), 1) as avg_hours_first_commit_to_pr\nFROM lake.pull_requests pr\nWHERE pr.created_date >= '2025-10-01'\n  AND pr.base_repo_id = 'github:GithubRepo:1:828624780'\nGROUP BY CASE \n  WHEN pr.created_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Commit-to-PR Time",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "id": 20,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN pr.merged_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  COUNT(DISTINCT pr.id) as total_merged_prs,\n  COUNT(DISTINCT d.id) as prs_with_deployments,\n  ROUND(AVG(TIMESTAMPDIFF(HOUR, pr.merged_date, d.finished_date)), 1) as avg_hours_to_deploy\nFROM lake.pull_requests pr\nJOIN lake.pull_request_commits prc ON pr.id = prc.pull_request_id\nJOIN lake.cicd_deployment_commits d ON prc.commit_sha = d.commit_sha\nWHERE pr.merged_date IS NOT NULL\n  AND pr.merged_date >= '2025-10-01'\n  AND pr.base_repo_id = 'github:GithubRepo:1:828624780'\n  AND d.result = 'SUCCESS'\n  AND d.environment LIKE '%PRODUCTION%'\nGROUP BY CASE \n  WHEN pr.merged_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PR-to-Deploy Time",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "id": 22,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN i.created_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  COUNT(DISTINCT i.id) as total_issues,\n  SUM(CASE WHEN ic.issue_id IS NOT NULL THEN 1 ELSE 0 END) as issues_with_commits,\n  ROUND(SUM(CASE WHEN ic.issue_id IS NOT NULL THEN 1 ELSE 0 END) * 100.0 / COUNT(DISTINCT i.id), 1) as pct_with_commits\nFROM lake.issues i\nLEFT JOIN (\n  SELECT DISTINCT issue_id \n  FROM lake.issue_commits\n) ic ON i.id = ic.issue_id\nWHERE i.created_date >= '2025-10-01'\nGROUP BY CASE \n  WHEN i.created_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Issue Coverage:",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "id": 24,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  COUNT(DISTINCT i.id) as total_issues_with_dates,\n  COUNT(DISTINCT ic.issue_id) as issues_linked_to_commits,\n  COUNT(DISTINCT pr.id) as prs_linked_to_issues\nFROM lake.issues i\nLEFT JOIN lake.issue_commits ic ON i.id = ic.issue_id\nLEFT JOIN lake.pull_request_commits prc ON ic.commit_sha = prc.commit_sha\nLEFT JOIN lake.pull_requests pr ON prc.pull_request_id = pr.id\nWHERE i.created_date >= '2025-10-01';",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Issue-to-Commit/PR",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 40
+      },
+      "id": 21,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN created_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  COUNT(*) as total_issues,\n  COUNT(CASE WHEN resolution_date IS NOT NULL THEN 1 END) as resolved_issues,\n  ROUND(AVG(CASE WHEN lead_time_minutes IS NOT NULL THEN lead_time_minutes / 60.0 END), 1) as avg_lead_time_hours,\n  ROUND(AVG(CASE WHEN lead_time_minutes IS NOT NULL THEN lead_time_minutes / 60.0 / 24.0 END), 1) as avg_lead_time_days\nFROM lake.issues\nWHERE created_date >= '2025-10-01'\n  AND lead_time_minutes IS NOT NULL\nGROUP BY CASE \n  WHEN created_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Jira Issue Lead Time",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 40
+      },
+      "id": 23,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  'Jira Issue Lead Time (days)' as metric,\n  ROUND((SELECT AVG(lead_time_minutes / 60.0 / 24.0)\n         FROM lake.issues\n         WHERE created_date >= '2025-10-01' \n           AND created_date < '2026-01-01'\n           AND lead_time_minutes IS NOT NULL), 1) as before_ai,\n  ROUND((SELECT AVG(lead_time_minutes / 60.0 / 24.0)\n         FROM lake.issues\n         WHERE created_date >= '2026-01-01'\n           AND lead_time_minutes IS NOT NULL), 1) as after_ai\n\nUNION ALL\n\nSELECT \n  'PR Lead Time (hours)',\n  ROUND((SELECT AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date))\n         FROM lake.pull_requests\n         WHERE merged_date IS NOT NULL\n           AND created_date >= '2025-10-01' \n           AND created_date < '2026-01-01'\n           AND base_repo_id = 'github:GithubRepo:1:828624780'), 1),\n  ROUND((SELECT AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date))\n         FROM lake.pull_requests\n         WHERE merged_date IS NOT NULL\n           AND created_date >= '2026-01-01'\n           AND base_repo_id = 'github:GithubRepo:1:828624780'), 1);",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Full Pipeline Summary",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "id": 18,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN created_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  CONCAT(from_value, ' → ', to_value) as transition,\n  COUNT(*) as transition_count,\n  ROUND(AVG(TIMESTAMPDIFF(HOUR, \n    (SELECT MAX(ic2.created_date) \n     FROM lake.issue_changelogs ic2 \n     WHERE ic2.issue_id = ic.issue_id \n       AND ic2.created_date < ic.created_date\n       AND ic2.field_name = 'status'),\n    created_date)), 1) as avg_hours_in_previous_status\nFROM lake.issue_changelogs ic\nWHERE created_date >= '2025-10-01'\n  AND field_name = 'status'\nGROUP BY \n  CASE \n    WHEN created_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END,\n  CONCAT(from_value, ' → ', to_value)\nORDER BY period, transition_count DESC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Status Transition Analysis",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 63
+      },
+      "id": 12,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  DATE_FORMAT(created_date, '%Y-%m-01') as month,\n  COUNT(*) as pr_count\nFROM lake.pull_requests\nWHERE merged_date IS NOT NULL\n  AND created_date >= '2025-10-01'\n  AND base_repo_id = 'github:GithubRepo:1:828624780'\nGROUP BY DATE_FORMAT(created_date, '%Y-%m-01')\nORDER BY month;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PR Throughput by Month",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 63
+      },
+      "id": 13,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  DATE_FORMAT(created_date, '%Y-%m-01') as month,\n  COUNT(CASE WHEN (additions + deletions) < 500 THEN 1 END) * 100.0 / COUNT(*) as pct_small_prs\nFROM lake.pull_requests\nWHERE merged_date IS NOT NULL\n  AND created_date >= '2025-10-01'\n  AND base_repo_id = 'github:GithubRepo:1:828624780'\nGROUP BY DATE_FORMAT(created_date, '%Y-%m-01')\nORDER BY month;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Percentage of Small PRs (<500 lines)",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 71
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  author_name,\n  COUNT(CASE WHEN created_date < '2026-01-01' THEN 1 END) as prs_before,\n  COUNT(CASE WHEN created_date >= '2026-01-01' THEN 1 END) as prs_after,\n  ROUND(AVG(CASE WHEN created_date < '2026-01-01' \n    THEN TIMESTAMPDIFF(HOUR, created_date, merged_date) END), 1) as avg_hours_before,\n  ROUND(AVG(CASE WHEN created_date >= '2026-01-01' \n    THEN TIMESTAMPDIFF(HOUR, created_date, merged_date) END), 1) as avg_hours_after,\n  ROUND(AVG(CASE WHEN created_date < '2026-01-01' \n    THEN additions + deletions END), 0) as avg_size_before,\n  ROUND(AVG(CASE WHEN created_date >= '2026-01-01' \n    THEN additions + deletions END), 0) as avg_size_after\nFROM lake.pull_requests\nWHERE merged_date IS NOT NULL\n  AND created_date >= '2025-10-01'\n  AND base_repo_id = 'github:GithubRepo:1:828624780'\n  AND author_name IS NOT NULL\nGROUP BY author_name\nHAVING COUNT(*) >= 3\nORDER BY (prs_before + prs_after) DESC\nLIMIT 20;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Developer Velocity - Before vs After",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 79
+      },
+      "id": 8,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "text": {
+          "valueSize": 32
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  DATE_FORMAT(created_date, '%Y-%m-01') as month,\n  COUNT(CASE WHEN (additions + deletions) < 100 THEN 1 END) as tiny,\n  COUNT(CASE WHEN (additions + deletions) BETWEEN 100 AND 500 THEN 1 END) as small,\n  COUNT(CASE WHEN (additions + deletions) BETWEEN 500 AND 1000 THEN 1 END) as medium,\n  COUNT(CASE WHEN (additions + deletions) BETWEEN 1000 AND 5000 THEN 1 END) as large,\n  COUNT(CASE WHEN (additions + deletions) > 5000 THEN 1 END) as xlarge\nFROM lake.pull_requests\nWHERE merged_date IS NOT NULL\n  AND created_date >= '2025-10-01'\n  AND base_repo_id = 'github:GithubRepo:1:828624780'\nGROUP BY DATE_FORMAT(created_date, '%Y-%m-01')\nORDER BY month;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PR Size Distribution by Month",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 79
+      },
+      "id": 5,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN created_date < '2026-01-01' THEN 'Before AI (Oct-Dec 2025)'\n    ELSE 'After AI (Jan-Apr 2026)'\n  END as period,\n  AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date)) as avg_hours_to_merge\nFROM lake.pull_requests\nWHERE merged_date IS NOT NULL\n  AND created_date >= '2025-10-01'\n  AND base_repo_id = 'github:GithubRepo:1:828624780'\nGROUP BY CASE \n  WHEN created_date < '2026-01-01' THEN 'Before AI (Oct-Dec 2025)'\n  ELSE 'After AI (Jan-Apr 2026)'\nEND\nORDER BY period;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PR Time to Merge - AI Impact",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 87
+      },
+      "id": 7,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  CASE \n    WHEN created_date < '2026-01-01' THEN 'Before AI'\n    ELSE 'After AI'\n  END as period,\n  AVG(additions + deletions) as avg_lines\nFROM lake.pull_requests\nWHERE merged_date IS NOT NULL\n  AND created_date >= '2025-10-01'\n  AND base_repo_id = 'github:GithubRepo:1:828624780'\nGROUP BY CASE \n  WHEN created_date < '2026-01-01' THEN 'Before AI'\n  ELSE 'After AI'\nEND\nORDER BY period;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Average PR Size (Lines Changed)",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 87
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  STR_TO_DATE(DATE_FORMAT(created_date, '%Y-%m-01'), '%Y-%m-%d') as time_sec,\n  AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date)) as avg_hours\nFROM lake.pull_requests\nWHERE merged_date IS NOT NULL\n  AND created_date >= '2025-10-01'\n  AND base_repo_id = 'github:GithubRepo:1:828624780'\nGROUP BY time_sec\nORDER BY time_sec;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PR Lead Time Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "P430005175C4C7810"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 95
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.2",
+      "targets": [
+        {
+          "dataset": "lake",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  'PR Lead Time (hours)' as metric,\n  ROUND((SELECT AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date))\n         FROM lake.pull_requests\n         WHERE merged_date IS NOT NULL\n           AND created_date >= '2025-10-01' \n           AND created_date < '2026-01-01'\n           AND base_repo_id = 'github:GithubRepo:1:828624780'), 1) as before_ai,\n  ROUND((SELECT AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date))\n         FROM lake.pull_requests\n         WHERE merged_date IS NOT NULL\n           AND created_date >= '2026-01-01'\n           AND created_date <= '2026-04-30'\n           AND base_repo_id = 'github:GithubRepo:1:828624780'), 1) as after_ai,\n  CONCAT(\n    ROUND(\n      ((SELECT AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date))\n        FROM lake.pull_requests\n        WHERE merged_date IS NOT NULL\n          AND created_date >= '2026-01-01'\n          AND created_date <= '2026-04-30'\n          AND base_repo_id = 'github:GithubRepo:1:828624780') -\n       (SELECT AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date))\n        FROM lake.pull_requests\n        WHERE merged_date IS NOT NULL\n          AND created_date >= '2025-10-01' \n          AND created_date < '2026-01-01'\n          AND base_repo_id = 'github:GithubRepo:1:828624780')) * 100.0 /\n      (SELECT AVG(TIMESTAMPDIFF(HOUR, created_date, merged_date))\n       FROM lake.pull_requests\n       WHERE merged_date IS NOT NULL\n         AND created_date >= '2025-10-01' \n         AND created_date < '2026-01-01'\n         AND base_repo_id = 'github:GithubRepo:1:828624780'),\n    1), '%') as pct_change,\n  'Improved' as status\n\nUNION ALL\n\nSELECT \n  'PR Size (lines)',\n  ROUND((SELECT AVG(additions + deletions)\n         FROM lake.pull_requests\n         WHERE merged_date IS NOT NULL\n           AND created_date >= '2025-10-01' \n           AND created_date < '2026-01-01'\n           AND base_repo_id = 'github:GithubRepo:1:828624780'), 0),\n  ROUND((SELECT AVG(additions + deletions)\n         FROM lake.pull_requests\n         WHERE merged_date IS NOT NULL\n           AND created_date >= '2026-01-01'\n           AND created_date <= '2026-04-30'\n           AND base_repo_id = 'github:GithubRepo:1:828624780'), 0),\n  CONCAT(\n    ROUND(\n      ((SELECT AVG(additions + deletions)\n        FROM lake.pull_requests\n        WHERE merged_date IS NOT NULL\n          AND created_date >= '2026-01-01'\n          AND created_date <= '2026-04-30'\n          AND base_repo_id = 'github:GithubRepo:1:828624780') -\n       (SELECT AVG(additions + deletions)\n        FROM lake.pull_requests\n        WHERE merged_date IS NOT NULL\n          AND created_date >= '2025-10-01' \n          AND created_date < '2026-01-01'\n          AND base_repo_id = 'github:GithubRepo:1:828624780')) * 100.0 /\n      (SELECT AVG(additions + deletions)\n       FROM lake.pull_requests\n       WHERE merged_date IS NOT NULL\n         AND created_date >= '2025-10-01' \n         AND created_date < '2026-01-01'\n         AND base_repo_id = 'github:GithubRepo:1:828624780'),\n    1), '%'),\n  'Smaller PRs'\n\nUNION ALL\n\nSELECT \n  'PR Throughput',\n  (SELECT COUNT(*)\n   FROM lake.pull_requests\n   WHERE merged_date IS NOT NULL\n     AND created_date >= '2025-10-01' \n     AND created_date < '2026-01-01'\n     AND base_repo_id = 'github:GithubRepo:1:828624780'),\n  (SELECT COUNT(*)\n   FROM lake.pull_requests\n   WHERE merged_date IS NOT NULL\n     AND created_date >= '2026-01-01'\n     AND created_date <= '2026-04-30'\n     AND base_repo_id = 'github:GithubRepo:1:828624780'),\n  CONCAT(\n    ROUND(\n      ((SELECT COUNT(*)\n        FROM lake.pull_requests\n        WHERE merged_date IS NOT NULL\n          AND created_date >= '2026-01-01'\n          AND created_date <= '2026-04-30'\n          AND base_repo_id = 'github:GithubRepo:1:828624780') -\n       (SELECT COUNT(*)\n        FROM lake.pull_requests\n        WHERE merged_date IS NOT NULL\n          AND created_date >= '2025-10-01' \n          AND created_date < '2026-01-01'\n          AND base_repo_id = 'github:GithubRepo:1:828624780')) * 100.0 /\n      (SELECT COUNT(*)\n       FROM lake.pull_requests\n       WHERE merged_date IS NOT NULL\n         AND created_date >= '2025-10-01' \n         AND created_date < '2026-01-01'\n         AND base_repo_id = 'github:GithubRepo:1:828624780'),\n    1), '%'),\n  'More PRs';",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "AI Enablement Impact Summary",
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 41,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6M",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "SWP AI Enablement Impact",
+  "uid": "ffjw0umaempdsd",
+  "version": 39
+}
