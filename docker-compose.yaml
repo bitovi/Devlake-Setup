@@ -21,7 +21,7 @@ services:
       retries: 10
 
   grafana:
-    image: apache/devlake-dashboard:v1.0.4-alpha
+    image: apache/devlake-dashboard:v1.0.3-beta10
     ports:
       - "3002:3000"
     volumes:
@@ -39,7 +39,7 @@ services:
         condition: service_healthy
 
   devlake:
-    image: apache/devlake:v1.0.4-alpha
+    image: apache/devlake:v1.0.3-beta10
     ports:
       - "127.0.0.1:8090:8080"
     restart: always
@@ -52,7 +52,7 @@ services:
         condition: service_healthy
 
   config-ui:
-    image: apache/devlake-config-ui:v1.0.4-alpha
+    image: apache/devlake-config-ui:v1.0.3-beta10
     ports:
       - "4000:4000"
     env_file:
